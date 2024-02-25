@@ -17,11 +17,13 @@ int kartlar[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 class Oyuncu {
 	private:
 		string isim;
+		string parola;
 		int para;
 		int can;
 	public:
-		Oyuncu(string isim) {
+		Oyuncu(string isim, string parola) {
 			this->isim = isim;
+			this->parola = parola;
 			this->can = 100;
 			this->para = 1000;
 		}
@@ -43,54 +45,71 @@ class Oyuncu {
 		void isim_gir(string yeni_isim) {
 			this->isim = yeni_isim;
 		}
+		string parola_ogren() {
+			return this->parola;
+		}
+		void parola_gir(string yeni_parola) {
+			this->parola = yeni_parola;
+		}
 };
+
+void sohbet(HANDLE h, Oyuncu* kisi, string mesaj, int renk, bool endline, bool efekt) {
+	if (efekt) { Sleep(500); }
+	SetConsoleTextAttribute(h, renk);
+	string isim;
+	if (kisi->isim_ogren().length() < 8) {
+		isim = kisi->isim_ogren() + "       ";
+	}
+	else if (kisi->isim_ogren().length() > 15) {
+		isim = kisi->isim_ogren().substr(0, 15);
+	}
+	else {
+		isim = kisi->isim_ogren();
+	}
+	if (efekt) {
+		for (int i = 0; i < isim.length(); i++) {
+			cout << isim[i];
+			Sleep(40);
+		}
+	}
+	else {
+		cout << isim;
+	}
+	SetConsoleTextAttribute(h, 7);
+	cout << "\t : ";
+	if (efekt) {
+		for (int i = 0; i < mesaj.length(); i++) {
+			cout << mesaj[i];
+			Sleep(40);
+		}
+	}
+	else {
+		cout << mesaj;
+	}
+	if (endline) {
+		cout << endl;
+	}
+	if (efekt) { Sleep(500); }
+}
 
 int main() {
 	bool kazandim = false;
 	setlocale(LC_ALL, "Turkish");
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	Oyuncu* malik = new Oyuncu("Nick Mason");
-	Oyuncu* poker = new Oyuncu("David Gilmour");
-	Oyuncu* banka = new Oyuncu("Roger Waters");
-	Oyuncu* kavga = new Oyuncu("Syd Barrett");
-	Oyuncu* pazar = new Oyuncu("Rick Wright");
-	Oyuncu* sen = new Oyuncu("Sen        ");
+	Oyuncu* malik = new Oyuncu("Nick Mason", "123456");
+	Oyuncu* poker = new Oyuncu("David Gilmour", "123456");
+	Oyuncu* banka = new Oyuncu("Roger Waters", "123456");
+	Oyuncu* kavga = new Oyuncu("Syd Barrett", "123456");
+	Oyuncu* pazar = new Oyuncu("Rick Wright", "123456");
+	Oyuncu* sahis = new Oyuncu("Sen", "");
 	try {
-		Sleep(1000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Kumarekop'a hoþ geldin yeðen, benim adým " << malik->isim_ogren() << ", bu mekanýn sahibi benim" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Buraya geldiðine göre kumar oynamayý seven bir yapýn var" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Ben de gençliðimde çok severdim ama tüm paramý batýrdým" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Ve artýk akýllandým, kumarý býraktým ama " << poker->isim_ogren() << " hala oynuyor" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Ama senin inatla bu iþlere bulaþma gibi bir isteðin var anlaþýlan" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Ýçeri girmek istiyorsan adýný öðrenmem lazým" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 9);
-		cout << sen->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: ";
+		sohbet(h, malik, "Kumarekop'a hoþ geldin yeðen, benim adým " + malik->isim_ogren() + ", bu mekanýn sahibi benim", 12, 1, 1);
+		sohbet(h, malik, "Buraya geldiðine göre kumar oynamayý seven bir yapýn var", 12, 1, 1);
+		sohbet(h, malik, "Ben de gençliðimde çok severdim ama tüm paramý batýrdým", 12, 1, 1);
+		sohbet(h, malik, "Ve artýk akýllandým, kumarý býraktým ama " + poker->isim_ogren() + " hala oynuyor", 12, 1, 1);
+		sohbet(h, malik, "Ama senin inatla bu iþlere bulaþma gibi bir isteðin var anlaþýlan", 12, 1, 1);
+		sohbet(h, malik, "Ýçeri girmek istiyorsan adýný öðrenmem lazým", 12, 1, 1);
+		sohbet(h, sahis, "", 9, 0, 1);
 		string isim;
 		cin.ignore(0);
 		getline(cin, isim, '\n');
@@ -110,16 +129,9 @@ int main() {
 		if (isim == pazar->isim_ogren()) {
 			throw 471;
 		}
-		sen->isim_gir(isim);
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Tamamdýr " << isim << ", þimdi bana yaþýný söyleyebilir misin" << endl;
-		Sleep(2000);
-		SetConsoleTextAttribute(h, 9);
-		cout << sen->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: ";
+		sahis->isim_gir(isim);
+		sohbet(h, malik, "Tamamdýr " + isim + ", þimdi bana yaþýný söyleyebilir misin", 12, 1, 1);
+		sohbet(h, sahis, "", 9, 0, 1);
 		int yas;
 		cin >> yas;
 		Sleep(1000);
@@ -129,75 +141,51 @@ int main() {
 		if (yas > 99) {
 			throw 473;
 		}
-		SetConsoleTextAttribute(h, 12);
-		cout << malik->isim_ogren();
-		SetConsoleTextAttribute(h, 7);
-		cout << "\t: Tamamdýr, o zaman seni mekanýmýza alalým þöyle" << endl;
+		sohbet(h, malik, "Tamamdýr, son olarak bir parolaya ihtiyacýn var", 12, 1, 1);
+		sohbet(h, malik, "En az 6 karakter içermesine dikkat et ve aklýnda tut", 12, 1, 1);
+		sohbet(h, sahis, "", 9, 0, 1);
+		string parola;
+		cin >> parola;
+		Sleep(1000);
+		if (parola.length() < 6) {
+			throw 474;
+		}
+		if (parola == "123456" || parola == "654321") {
+			throw 475;
+		}
+		sahis->isim_gir(isim);
+		sohbet(h, malik, "Tamamdýr, o zaman seni mekanýmýza alalým þöyle", 12, 1, 1);
 	}
 	catch(int err) {
 		if (err == 467) {
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: Benim adaþým olan kimseler, bu mekana giremez" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: (Sana silah çeker...)" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: PAT! (Öldün...)" << endl;
+			sohbet(h, malik, "Benim adaþým olan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
 		}
 		if (err > 467 && err < 472) {
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: Benim arkadaþlarýmýn adaþý olan kimseler, bu mekana giremez" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: (Sana silah çeker...)" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: PAT! (Öldün...)" << endl;
+			sohbet(h, malik, "Benim arkadaþlarýmýn adaþý olan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
 		}
 		if (err == 472) {
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: 18 yaþýndan küçük olan kimseler, bu mekana giremez" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: (Sana silah çeker...)" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: PAT! (Öldün...)" << endl;
+			sohbet(h, malik, "18 yaþýndan küçük olan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
 		}
 		if (err == 473) {
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: 99 yaþýndan büyük olan kimseler, bu mekana giremez" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: (Sana silah çeker...)" << endl;
-			Sleep(2000);
-			SetConsoleTextAttribute(h, 12);
-			cout << malik->isim_ogren();
-			SetConsoleTextAttribute(h, 7);
-			cout << "\t: PAT! (Öldün)" << endl;
+			sohbet(h, malik, "99 yaþýndan büyük olan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+		}
+		if (err == 474) {
+			sohbet(h, malik, "Dediðimi anlayamayan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+		}
+		if (err == 475) {
+			sohbet(h, malik, "Bu kadar ahmak olan kimseler, bu mekana giremez", 12, 1, 1);
+			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
+			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
 		}
 	}
 	return 0;
