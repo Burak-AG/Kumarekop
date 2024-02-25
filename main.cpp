@@ -188,5 +188,11 @@ int main() {
 			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
 		}
 	}
+	delete malik;
+	delete poker;
+	delete banka;
+	delete kavga;
+	delete pazar;
+	delete sahis;
 	return 0;
 }
