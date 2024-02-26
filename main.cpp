@@ -33,11 +33,17 @@ class Oyuncu {
 		void para_gir(int yeni_para) {
 			this->para = yeni_para;
 		}
+		void para_ekle(int miktar) {
+			this->para += miktar;
+		}
 		int can_ogren() {
 			return this->can;
 		}
 		void can_gir(int yeni_can) {
 			this->can = yeni_can;
+		}
+		void can_ekle(int miktar) {
+			this->can += miktar;
 		}
 		string isim_ogren() {
 			return this->isim;
@@ -53,12 +59,20 @@ class Oyuncu {
 		}
 };
 
+void isaretci_gorunumu(HANDLE h, bool durum) {
+    CONSOLE_CURSOR_INFO bilgi;
+    GetConsoleCursorInfo(h, &bilgi);
+    bilgi.bVisible = durum;
+    SetConsoleCursorInfo(h, &bilgi);
+}
+
 void sohbet(HANDLE h, Oyuncu* kisi, string mesaj, int renk, bool endline, bool efekt) {
-	if (efekt) { Sleep(500); }
+	isaretci_gorunumu(h, false);
+	if (efekt) { Sleep(300); }
 	SetConsoleTextAttribute(h, renk);
 	string isim;
 	if (kisi->isim_ogren().length() < 8) {
-		isim = kisi->isim_ogren() + "       ";
+		isim = kisi->isim_ogren() + "\t";
 	}
 	else if (kisi->isim_ogren().length() > 15) {
 		isim = kisi->isim_ogren().substr(0, 15);
@@ -69,7 +83,7 @@ void sohbet(HANDLE h, Oyuncu* kisi, string mesaj, int renk, bool endline, bool e
 	if (efekt) {
 		for (int i = 0; i < isim.length(); i++) {
 			cout << isim[i];
-			Sleep(40);
+			Sleep(30);
 		}
 	}
 	else {
@@ -80,7 +94,7 @@ void sohbet(HANDLE h, Oyuncu* kisi, string mesaj, int renk, bool endline, bool e
 	if (efekt) {
 		for (int i = 0; i < mesaj.length(); i++) {
 			cout << mesaj[i];
-			Sleep(40);
+			Sleep(30);
 		}
 	}
 	else {
@@ -89,7 +103,49 @@ void sohbet(HANDLE h, Oyuncu* kisi, string mesaj, int renk, bool endline, bool e
 	if (endline) {
 		cout << endl;
 	}
-	if (efekt) { Sleep(500); }
+	if (efekt) { Sleep(300); }
+	isaretci_gorunumu(h, true);
+}
+
+void mesaj(HANDLE h, string mesaj, int renk, bool efekt) {
+	isaretci_gorunumu(h, false);
+	if (efekt) { Sleep(300); }
+	SetConsoleTextAttribute(h, renk);
+	string rule1 = "---------------- : ";
+	string rule2 = " : ----------------";
+	if (efekt) {
+		for (int i = 0; i < rule1.length(); i++) {
+			cout << rule1[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << rule1;
+	}
+	SetConsoleTextAttribute(h, 7);
+	if (efekt) {
+		for (int i = 0; i < mesaj.length(); i++) {
+			cout << mesaj[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << mesaj;
+	}
+	SetConsoleTextAttribute(h, renk);
+	if (efekt) {
+		for (int i = 0; i < rule2.length(); i++) {
+			cout << rule2[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << rule2;
+	}
+	SetConsoleTextAttribute(h, 7);
+	cout << endl;
+	if (efekt) { Sleep(300); }
+	isaretci_gorunumu(h, true);
 }
 
 int main() {
@@ -113,7 +169,7 @@ int main() {
 		string isim;
 		cin.ignore(0);
 		getline(cin, isim, '\n');
-		Sleep(1000);
+		Sleep(300);
 		if (isim == malik->isim_ogren()) {
 			throw 467;
 		}
@@ -134,7 +190,7 @@ int main() {
 		sohbet(h, sahis, "", 9, 0, 1);
 		int yas;
 		cin >> yas;
-		Sleep(1000);
+		Sleep(300);
 		if (yas < 18) {
 			throw 472;
 		}
@@ -146,7 +202,7 @@ int main() {
 		sohbet(h, sahis, "", 9, 0, 1);
 		string parola;
 		cin >> parola;
-		Sleep(1000);
+		Sleep(300);
 		if (parola.length() < 6) {
 			throw 474;
 		}
@@ -155,37 +211,46 @@ int main() {
 		}
 		sahis->isim_gir(isim);
 		sohbet(h, malik, "Tamamdýr, o zaman seni mekanýmýza alalým þöyle", 12, 1, 1);
+		mesaj(h, "Nick Mason abimizin mekanýna girdiniz (" + sahis->isim_ogren() + ")", 8, 1);
+		sohbet(h, malik, "Bekle, seni buradaki elemanlarla tanýþtýrayým", 12, 1, 1);
+		sohbet(h, malik, "Bu, mekanýmýzýn kumarbazý David Gilmour, onunla birlikte kumar oynayabilirsin", 12, 1, 1);
+		sohbet(h, malik, "Bu, mekanýmýzýn bankasý Roger Waters, ondan faizle para alabilir veya faizle ona para verebilirsin", 12, 1, 1);
+		sohbet(h, malik, "Bu, mekanýmýzýn kavgacýsý Syd Barrett, onunla parasýna dövüþlere girebilirsin", 12, 1, 1);
+		sohbet(h, malik, "Ve bu da, mekanýmýzýn pazarcýsý Rick Wright, ondan eþyalarý alabilirsin veya geri iade edebilirsin", 12, 1, 1);
+		sohbet(h, malik, "Ben de dediðim gibi bu mekanýn sahibi ve ayný zamanda tefecisiyim, dara düþtüðünde gelebilirsin", 12, 1, 1);
+		sohbet(h, malik, "O zaman sana iyi eðlenceler, hadi ben kaçtým", 12, 1, 1);
+		mesaj(h, "Oyundaki amacýnýz en kýsa sürede milyoner olmaktýr (" + sahis->isim_ogren() + ")", 8, 1);
 	}
 	catch(int err) {
 		if (err == 467) {
 			sohbet(h, malik, "Benim adaþým olan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 0);
 		}
 		if (err > 467 && err < 472) {
 			sohbet(h, malik, "Benim arkadaþlarýmýn adaþý olan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 0);
 		}
 		if (err == 472) {
 			sohbet(h, malik, "18 yaþýndan küçük olan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 0);
 		}
 		if (err == 473) {
 			sohbet(h, malik, "99 yaþýndan büyük olan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 0);
 		}
 		if (err == 474) {
 			sohbet(h, malik, "Dediðimi anlayamayan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 0);
 		}
 		if (err == 475) {
 			sohbet(h, malik, "Bu kadar ahmak olan kimseler, bu mekana giremez", 12, 1, 1);
 			sohbet(h, malik, "(Sana silah çeker...)", 12, 1, 1);
-			sohbet(h, malik, "PAT! (Öldün...)", 12, 1, 0);
+			mesaj(h, "PAT! (Öldün...) (" + sahis->isim_ogren() + ")", 8, 8);
 		}
 	}
 	delete malik;
