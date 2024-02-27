@@ -122,7 +122,7 @@ void mesaj(HANDLE h, string mesaj, int renk, bool efekt) {
 	else {
 		cout << rule1;
 	}
-	SetConsoleTextAttribute(h, 7);
+	SetConsoleTextAttribute(h, 6);
 	if (efekt) {
 		for (int i = 0; i < mesaj.length(); i++) {
 			cout << mesaj[i];
@@ -146,6 +146,59 @@ void mesaj(HANDLE h, string mesaj, int renk, bool efekt) {
 	cout << endl;
 	if (efekt) { Sleep(300); }
 	isaretci_gorunumu(h, true);
+}
+
+int secim(HANDLE h, Oyuncu* kisi, string secenekler, int renk1, int renk2, bool efekt) {
+	isaretci_gorunumu(h, false);
+	if (efekt) { Sleep(300); }
+	SetConsoleTextAttribute(h, renk1);
+	string sec = "Seçenekler\t : ";
+	if (efekt) {
+		for (int i = 0; i < sec.length(); i++) {
+			cout << sec[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << sec;
+	}
+	if (efekt) {
+		for (int i = 0; i < secenekler.length(); i++) {
+			cout << secenekler[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << secenekler;
+	}
+	cout << endl;
+	SetConsoleTextAttribute(h, renk2);
+	string isim;
+	if (kisi->isim_ogren().length() < 8) {
+		isim = kisi->isim_ogren() + "\t";
+	}
+	else if (kisi->isim_ogren().length() > 15) {
+		isim = kisi->isim_ogren().substr(0, 15);
+	}
+	else {
+		isim = kisi->isim_ogren();
+	}
+	if (efekt) {
+		for (int i = 0; i < isim.length(); i++) {
+			cout << isim[i];
+			Sleep(30);
+		}
+	}
+	else {
+		cout << isim;
+	}
+	SetConsoleTextAttribute(h, 7);
+	cout << "\t : ";
+	if (efekt) { Sleep(300); }
+	isaretci_gorunumu(h, true);
+	int secenek;
+	cin >> secenek;
+	return secenek;
 }
 
 int main() {
@@ -220,6 +273,31 @@ int main() {
 		sohbet(h, malik, "Ben de dediðim gibi bu mekanýn sahibi ve ayný zamanda tefecisiyim, dara düþtüðünde gelebilirsin", 12, 1, 1);
 		sohbet(h, malik, "O zaman sana iyi eðlenceler, hadi ben kaçtým", 12, 1, 1);
 		mesaj(h, "Oyundaki amacýnýz en kýsa sürede milyoner olmaktýr (" + sahis->isim_ogren() + ")", 8, 1);
+		while (sahis->para_ogren() < 1000000 && sahis->can_ogren() > 0) {
+			int s1 = secim(h, sahis, "(1:Envantere bak, 2:David'e git, 3:Roger'a git, 4:Syd'e git, 5:Nick'e git, 6:Rick'e git)", 8, 9, 1);
+			switch (s1) {
+				case 1:
+					cout << "ENVANTER GÖSTERÝLECEK" << endl;
+					break;
+				case 2:
+					sohbet(h, poker, "Selam, biraz kumar oynamak ister misin, ne oynayalým?", 12, 1, 1);
+					break;
+				case 3:
+					sohbet(h, banka, "Merhaba, bu para babasýndan ne istersin?", 12, 1, 1);
+					break;
+				case 4:
+					sohbet(h, kavga, "Çok sýkýldým, biraz dövüþmek ister misin?", 12, 1, 1);
+					break;
+				case 5:
+					sohbet(h, malik, "Yine ne oldu, problemin nedir, ne istiyorsun?", 12, 1, 1);
+					break;
+				case 6:
+					sohbet(h, pazar, "Selam, benden ne satýn almak istersin?", 12, 1, 1);
+					break;
+				default 7:
+					cout << "ÖYLE BÝR ÞEY YOK" << endl;
+			}
+		}
 	}
 	catch(int err) {
 		if (err == 467) {
